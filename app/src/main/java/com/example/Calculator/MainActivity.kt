@@ -17,13 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.Calculator.components.MainContent
 import com.example.Calculator.components.TopHeader
 import com.example.Calculator.ui.theme.CalculatorTheme
+import com.example.Calculator.util.calculateTotalBillPerPerson
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CalculatorTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -38,21 +38,37 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TipCalculator() {
-    val totalBillState = remember {
-        mutableStateOf("")
-    }
-    val validState = remember(totalBillState.value) {
-        totalBillState.value.trim().isNotEmpty()
-    }
 
+    val billState = remember {
+        mutableStateOf(0.0)
+    }
+    val validState = remember(billState.value) {
+        billState.value.toString().trim().isNotEmpty()
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val sliderState = remember {
+        mutableStateOf(0.0)
+    }
+    val tipPercent = (sliderState.value * 100).toInt()
+    val splitState = remember {
+        mutableStateOf(0)
+    }
+    val totalTip = remember {
+        mutableStateOf(0.0)
+    }
+    val totalBillPerPerson =
+        calculateTotalBillPerPerson(billState.value, totalTip.value, splitState.value)
 
     Column {
-        TopHeader(totalValue = 130.4)
+        TopHeader(totalValue = totalBillPerPerson)
         MainContent(
-            totalBillState = totalBillState,
+            billState = billState,
+            sliderState = sliderState,
             validState = validState,
-            keyboardController = keyboardController
+            keyboardController = keyboardController,
+            splitState = splitState,
+            tipPercent = tipPercent,
+            totalTip = totalTip,
         )
     }
 }

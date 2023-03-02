@@ -30,7 +30,7 @@ fun TopHeader(totalValue: Double, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Total Amount is",
+                text = "Total Bill Per Person",
                 style = MaterialTheme.typography.h5
             )
             Text(
